@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +16,6 @@ builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
 builder.Logging.AddFileLogger(logFilePath);
 
-
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -28,9 +28,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<AuthorizationService>();
 
 var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+if (app.Environment.IsDevelopment())
+{
+    logger.LogWarning("Web Application has been started in development environment...");
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+
+        await DbInitializer.SeedRolesAsync(roleManager);
+        await DbInitializer.SeedAdminAsync(userManager);
+    }
+}
 
 app.UseStaticFiles();
 
@@ -38,6 +54,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
+logger.LogInformation("Starting web applicaton...");
 app.Run();
-logger.LogInformation("The system is now operational!");

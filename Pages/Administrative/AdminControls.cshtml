@@ -1,0 +1,17 @@
+﻿@page
+@model WebApp.Pages.Administrative.AdminControlsModel
+
+<h2>Admin Controls</h2>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @Model.ErrorMessage
+    </div>
+}
+else
+{
+    <p>Welcome to the admin controls page.</p>
+    <h4>Your name: @User.Identity.Name</h4>
+    <h4>Current rank: @Model.UserRank</h4> 
+}
