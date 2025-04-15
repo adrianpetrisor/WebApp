@@ -1,0 +1,70 @@
+﻿@page
+@model WebApp.Pages.RegisterModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <style>
+        body {
+            background-color: #161616;
+            color: #DDDDDD;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #1f1f1f;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            width: 300px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            color: #DDDDDD;
+            border-radius: 8px;
+        }
+
+        button {
+            background-color: #3a3a3a;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+            button:hover {
+                background-color: #555;
+            }
+
+        a {
+            color: #888;
+            text-decoration: none;
+            display: block;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <form method="post">
+        <h2 style="text-align: center;">Register</h2>
+        <input asp-for="Input.Username" placeholder="Username" required /> 
+        <input asp-for="Input.Email" type="email" placeholder="Email" required />
+        <input asp-for="Input.Password" type="password" placeholder="Password" required />
+        <button type="submit">Register</button>
+        <a href="/Login">Already have an account?</a>
+    </form>
+</body>
+</html>
