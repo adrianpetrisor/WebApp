@@ -4,6 +4,18 @@ using WebApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var logFolder = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
+Directory.CreateDirectory(logFolder);
+
+var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+var logFilePath = Path.Combine(logFolder, $"log-{timestamp}.txt");
+
+builder.Services.AddSingleton<IAppLogger, AppLogger>();
+builder.Logging.ClearProviders();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+builder.Logging.AddFileLogger(logFilePath);
+
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -18,6 +30,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
 app.UseStaticFiles();
 
@@ -27,3 +40,4 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.Run();
+logger.LogInformation("The system is now operational!");

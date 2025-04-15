@@ -9,11 +9,13 @@ namespace WebApp.Pages
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IAppLogger _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public LoginModel(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IAppLogger logger)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _logger = logger;
         }
 
         [BindProperty]
@@ -27,7 +29,9 @@ namespace WebApp.Pages
             public string Password { get; set; }
         }
 
-        public void OnGet() { }
+        public void OnGet() {
+            _logger.LogInfo("Loaded authentication panel.");
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
