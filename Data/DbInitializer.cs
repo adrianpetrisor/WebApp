@@ -6,7 +6,13 @@ namespace WebApp.Data
     {
         public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
         {
-            string[] roleNames = { "Administrator", "HR", "User" };
+            string[] roleNames = { 
+                "Administrator",
+                "Quality Assurance",
+                "User",
+                "Human Resources",
+                "Developer"
+            };
 
             foreach (var roleName in roleNames)
             {

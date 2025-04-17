@@ -7,7 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var logFolder = Path.Combine(Directory.GetCurrentDirectory(), "Logs");
 Directory.CreateDirectory(logFolder);
-
 var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
 var logFilePath = Path.Combine(logFolder, $"log-{timestamp}.txt");
 
@@ -23,12 +22,14 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("DataSource=C:\\Users\\negatiwe\\source\\repos\\WebApp\\webapp.db"));
+var connectionString = "Server=localhost;Port=3306;Database=webapp;User=root;Password=mysqlroot;";
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 0))));
 
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<AuthorizationService>();
+builder.Services.AddScoped<RoleService>();
 
 var app = builder.Build();
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
@@ -49,10 +50,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapRazorPages();
-logger.LogInformation("Starting web applicaton...");
+
+logger.LogInformation("Starting web application...");
 app.Run();
