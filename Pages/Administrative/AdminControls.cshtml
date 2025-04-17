@@ -33,6 +33,33 @@
     <button type="submit" class="btn btn-primary mt-2">Assign Role</button>
 </form>
 
+<hr />
+<h3>Delete a User Account</h3>
+
+<form method="post" asp-page-handler="FindUser">
+    <div class="form-group">
+        <label for="DeleteInput_Username">Username</label>
+        <input asp-for="DeleteInput.Username" class="form-control" />
+        <span asp-validation-for="DeleteInput.Username" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-warning mt-2">Find User</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.DeleteInput?.Email))
+{
+    <div class="mt-4 p-3 border bg-light rounded">
+        <h5>Found User:</h5>
+        <p><strong>Username:</strong> @Model.DeleteInput.Username</p>
+        <p><strong>Email:</strong> @Model.DeleteInput.Email</p>
+        <p><strong>Role:</strong> @Model.DeleteInput.Role</p>
+
+        <form method="post" asp-page-handler="DeleteUser">
+            <input type="hidden" asp-for="DeleteInput.Username" />
+            <button type="submit" class="btn btn-danger mt-2">Delete This Account</button>
+        </form>
+    </div>
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
