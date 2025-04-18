@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Threading.Tasks;
 
-namespace WebApp.Pages
+namespace WebApp.Pages.Account
 {
     public class LoginModel : PageModel
     {
@@ -29,7 +29,8 @@ namespace WebApp.Pages
             public string Password { get; set; }
         }
 
-        public void OnGet() {
+        public void OnGet()
+        {
             _logger.LogInfo("Loaded authentication panel.");
         }
 

@@ -10,36 +10,21 @@ namespace WebApp.Pages.Administrative
     public class AdminControlsModel : PageModel
     {
         private readonly ILogger<AdminControlsModel> _logger;
-        private readonly AuthorizationService _authorizationService;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
 
         public string ErrorMessage { get; set; }
         public string StatusMessage { get; set; }
         public string UserRank { get; set; }
 
         [BindProperty]
-        public RoleInputModel Input { get; set; }
-
-        [BindProperty]
         public DeleteInputModel DeleteInput { get; set; }
 
         public AdminControlsModel(
             ILogger<AdminControlsModel> logger,
-            AuthorizationService authorizationService,
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            UserManager<IdentityUser> userManager)
         {
             _logger = logger;
-            _authorizationService = authorizationService;
             _userManager = userManager;
-            _roleManager = roleManager;
-        }
-
-        public class RoleInputModel
-        {
-            public string Username { get; set; }
-            public string Role { get; set; }
         }
 
         public class DeleteInputModel
@@ -60,61 +45,6 @@ namespace WebApp.Pages.Administrative
 
             var roles = await _userManager.GetRolesAsync(user);
             UserRank = roles.FirstOrDefault() ?? "None";
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                StatusMessage = "Invalid input!";
-                await OnGetAsync();
-                return Page();
-            }
-
-            var targetUser = await _userManager.FindByNameAsync(Input.Username);
-            if (targetUser == null)
-            {
-                StatusMessage = $"User '{Input.Username}' not found.";
-                await OnGetAsync();
-                return Page();
-            }
-
-            var targetRoles = await _userManager.GetRolesAsync(targetUser);
-            if (targetRoles.Contains(Input.Role, StringComparer.OrdinalIgnoreCase))
-            {
-                StatusMessage = $"User '{Input.Username}' is already in the '{Input.Role}' role.";
-                await OnGetAsync();
-                return Page();
-            }
-
-            // Remove existing roles
-            var removeResult = await _userManager.RemoveFromRolesAsync(targetUser, targetRoles);
-            if (!removeResult.Succeeded)
-            {
-                StatusMessage = $"Failed to remove existing roles: {string.Join(", ", removeResult.Errors.Select(e => e.Description))}";
-                await OnGetAsync();
-                return Page();
-            }
-
-            // Check role exists
-            var roleExists = await _roleManager.RoleExistsAsync(Input.Role.ToUpper());
-            if (!roleExists)
-            {
-                StatusMessage = $"Role '{Input.Role}' does not exist in the database.";
-                await OnGetAsync();
-                return Page();
-            }
-
-            // Assign new role
-            var result = await _userManager.AddToRoleAsync(targetUser, Input.Role);
-            StatusMessage = result.Succeeded
-                ? $"Successfully assigned role '{Input.Role}' to user '{Input.Username}'."
-                : $"Failed to assign role: {string.Join(", ", result.Errors.Select(e => e.Description))}";
-
-            _logger.LogInformation($"User '{User.Identity.Name}' changed role of '{Input.Username}' to '{Input.Role}'.");
-
-            await OnGetAsync();
-            return Page();
         }
 
         public async Task<IActionResult> OnPostFindUserAsync()

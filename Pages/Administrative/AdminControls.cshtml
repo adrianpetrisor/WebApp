@@ -17,22 +17,6 @@
     <p>Your role: <strong>@Model.UserRank</strong></p>
 }
 
-<form method="post">
-    <div class="form-group">
-        <label asp-for="Input.Username">Target Username</label>
-        <input asp-for="Input.Username" class="form-control" />
-        <span asp-validation-for="Input.Username" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Input.Role">Role to Assign</label>
-        <input asp-for="Input.Role" class="form-control" />
-        <span asp-validation-for="Input.Role" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-2">Assign Role</button>
-</form>
-
 <hr />
 <h3>Delete a User Account</h3>
 
