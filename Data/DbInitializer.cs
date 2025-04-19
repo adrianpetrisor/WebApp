@@ -11,7 +11,8 @@ namespace WebApp.Data
                 "Quality Assurance",
                 "User",
                 "Human Resources",
-                "Developer"
+                "Developer",
+                "Employee"
             };
 
             foreach (var roleName in roleNames)

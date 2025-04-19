@@ -1,0 +1,50 @@
+﻿@page
+@model WebApp.Pages.Administrative.EmployeesModel
+@{
+    ViewData["Title"] = "Employees";
+}
+
+<h1>Employee List</h1>
+
+@if (Model.CanAddEmployee)
+{
+    <a class="btn btn-primary mb-3" asp-page="/Administrative/AddEmployee">Add New Employee</a>
+}
+
+@if (Model.Employees != null && Model.Employees.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var employee in Model.Employees)
+        {
+            if (!employee.Roles.Contains("User"))
+            {
+                <tr>
+                    <td>@employee.UserName</td>
+                    <td>@employee.Email</td>
+                    <td>@string.Join(", ", employee.Roles)</td>
+                    <td>
+                        <a href="@Url.Page("/Administrative/EditEmployee", new { id = employee.UserName })" class="btn btn-link" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                <path d="M12.146 0l3.708 3.708a1 1 0 0 1 0 1.414L4.828 14.828a1 1 0 0 1-.707.293l-2.828-2.828a1 1 0 0 1-.293-.707L12.146 0zM13 3.707 12.293 4.414 3.586 13.121 2.879 12.414 11.586 3.707A1 1 0 0 1 13 3.707z"/>
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No employees found.</p>
+}
