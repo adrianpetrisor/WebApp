@@ -13,6 +13,7 @@ var logFilePath = Path.Combine(logFolder, $"log-{timestamp}.txt");
 builder.Services.AddSingleton<IAppLogger, AppLogger>();
 builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
+//builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.None);
 builder.Logging.AddFileLogger(logFilePath);
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -40,12 +41,8 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
-
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-
         await DbInitializer.SeedRolesAsync(roleManager);
-        await DbInitializer.SeedAdminAsync(userManager);
     }
 }
 
